@@ -9,6 +9,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
+import random
 import json
 
 
@@ -231,8 +232,14 @@ class Ui_AutoInvest(object):
                 'contact_if_less': contact_if_less,
             }
 
-            with open('./data/users.json', 'w') as users:
-                json.dump(new_user, users)
+            users = json.load(open('./data/users.json'))
+            
+            user_id = str(random.randint(100000000000000000000000000000, 999999999999999999999999999999))
+
+            with open('./data/users.json', 'w') as f:
+                users[user_id] = new_user
+                
+                json.dump(users, f, indent=4, sort_keys=True)
             
             self.show_popup('Success!', 'We have now added you to our users.', QMessageBox.Information)
     
