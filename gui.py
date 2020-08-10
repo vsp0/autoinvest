@@ -8,6 +8,8 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QMessageBox
+import json
 
 
 class Ui_AutoInvest(object):
@@ -155,6 +157,16 @@ class Ui_AutoInvest(object):
         self.retranslateUi(AutoInvest)
         QtCore.QMetaObject.connectSlotsByName(AutoInvest)
 
+        self.start_btn.clicked.connect(lambda: self.start_clicked(
+            self.email_sender.toPlainText(),
+            self.email_passwd.toPlainText(),
+            self.email_recipient.toPlainText(),
+            self.your_btc.toPlainText(),
+            self.value.toPlainText(),
+            str(self.currency.currentText()),
+            self.contact_if_less.isChecked(),
+        ))
+
     def retranslateUi(self, AutoInvest):
         _translate = QtCore.QCoreApplication.translate
         AutoInvest.setWindowTitle(_translate("AutoInvest", "AutoInvest"))
@@ -196,6 +208,45 @@ class Ui_AutoInvest(object):
         self.label_8.setText(_translate("AutoInvest", "greater"))
         self.contact_if_less.setText(_translate("AutoInvest", "Notify me when BTC value is x less"))
         self.start_btn.setText(_translate("AutoInvest", "Start"))
+
+    def start_clicked(self, email_sender, 
+                      email_passwd, 
+                      email_recipient, 
+                      your_btc, 
+                      value, 
+                      currency, 
+                      contact_if_less):
+
+        if email_sender == '' or email_passwd == '' or email_recipient == '' or your_btc == '' or value == '':
+            self.show_popup('AutoInvest', 'Looks like you haven\'t entered all values.', QMessageBox.Warning)
+
+        else:
+            new_user = {
+                'email_sender': email_sender,
+                'email_passwd': email_passwd,
+                'email_recipient': email_recipient,
+                'your_btc': your_btc,
+                'value': value,
+                'currency': currency,
+                'contact_if_less': contact_if_less,
+            }
+
+            with open('./data/users.json', 'w') as users:
+                json.dump(new_user, users)
+            
+            self.show_popup('Success!', 'We have now added you to our users.', QMessageBox.Information)
+    
+    def show_popup(self, title, text, icon):
+        msg = QMessageBox()
+
+        msg.setWindowTitle(title)
+        msg.setText(text)
+        msg.setIcon(icon)
+
+        msg.setStandardButtons(QMessageBox.Ok)
+
+        msg.exec_()
+
 
 
 if __name__ == "__main__":
