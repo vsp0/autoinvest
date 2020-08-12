@@ -9,6 +9,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
+from lib.currencies import get_latest_btc
 import random
 import json
 
@@ -158,9 +159,10 @@ class Ui_AutoInvest(object):
             self.email_sender.toPlainText(),
             self.email_passwd.toPlainText(),
             self.email_recipient.toPlainText(),
-            self.your_btc.toPlainText(),
-            self.value.toPlainText(),
+            self.isfloat(self.your_btc.toPlainText()),
+            self.isfloat(self.value.toPlainText()),
             str(self.currency.currentText()),
+            get_latest_btc(),
         ))
 
     def retranslateUi(self, AutoInvest):
@@ -205,10 +207,11 @@ class Ui_AutoInvest(object):
 
     def start_clicked(self, email_sender, 
                       email_passwd, 
-                      email_recipient, 
-                      your_btc, 
+                      email_recipient,
+                      your_btc,
                       value, 
-                      currency):
+                      currency,
+                      past_btc_value):
 
         if email_sender == '' or email_passwd == '' or email_recipient == '' or your_btc == '' or value == '':
             self.show_popup('AutoInvest', 'Looks like you haven\'t entered all values.', QMessageBox.Warning)
@@ -221,6 +224,7 @@ class Ui_AutoInvest(object):
                 'your_btc': your_btc,
                 'value': value,
                 'currency': currency,
+                'past_btc_value': past_btc_value,
             }
 
             users = json.load(open('./data/users.json'))
@@ -244,7 +248,18 @@ class Ui_AutoInvest(object):
         msg.setStandardButtons(QMessageBox.Ok)
 
         msg.exec_()
+    
+    def isfloat(self, value):
+        try:
+            float(value)
+        
+        except ValueError:
+            self.show_popup('AutoInvest', 'Looks like you haven\'t entered a valid number. Quitting...', QMessageBox.Critical)
+            
+            exit()
 
+        else:
+            return float(value)
 
 
 if __name__ == "__main__":
