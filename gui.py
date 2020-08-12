@@ -136,9 +136,6 @@ class Ui_AutoInvest(object):
         self.label_8.setFont(font)
         self.label_8.setToolTip("")
         self.label_8.setObjectName("label_8")
-        self.contact_if_less = QtWidgets.QCheckBox(self.centralwidget)
-        self.contact_if_less.setGeometry(QtCore.QRect(10, 560, 191, 17))
-        self.contact_if_less.setObjectName("contact_if_less")
         self.start_btn = QtWidgets.QPushButton(self.centralwidget)
         self.start_btn.setGeometry(QtCore.QRect(10, 580, 141, 41))
         font = QtGui.QFont()
@@ -164,7 +161,6 @@ class Ui_AutoInvest(object):
             self.your_btc.toPlainText(),
             self.value.toPlainText(),
             str(self.currency.currentText()),
-            self.contact_if_less.isChecked(),
         ))
 
     def retranslateUi(self, AutoInvest):
@@ -205,7 +201,6 @@ class Ui_AutoInvest(object):
         self.currency.setItemText(0, _translate("AutoInvest", "BTC"))
         self.currency.setItemText(1, _translate("AutoInvest", "EUR"))
         self.label_8.setText(_translate("AutoInvest", "greater"))
-        self.contact_if_less.setText(_translate("AutoInvest", "Notify me when BTC value is x less"))
         self.start_btn.setText(_translate("AutoInvest", "Start"))
 
     def start_clicked(self, email_sender, 
@@ -213,8 +208,7 @@ class Ui_AutoInvest(object):
                       email_recipient, 
                       your_btc, 
                       value, 
-                      currency, 
-                      contact_if_less):
+                      currency):
 
         if email_sender == '' or email_passwd == '' or email_recipient == '' or your_btc == '' or value == '':
             self.show_popup('AutoInvest', 'Looks like you haven\'t entered all values.', QMessageBox.Warning)
@@ -227,7 +221,6 @@ class Ui_AutoInvest(object):
                 'your_btc': your_btc,
                 'value': value,
                 'currency': currency,
-                'contact_if_less': contact_if_less,
             }
 
             users = json.load(open('./data/users.json'))
