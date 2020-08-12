@@ -24,5 +24,4 @@ while True:
 
                 mailing.send_email(user['email_sender'], user['email_passwd'], user['email_recipient'], email_content)
 
-
-    time.sleep(3)
+    time.sleep(60)
